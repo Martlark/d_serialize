@@ -36,6 +36,16 @@ class MyTestCase(unittest.TestCase):
         serialized = d_serialize(d)
         self.assertEqual(d, serialized)
 
+    def test_simple_set(self):
+        d = dict(set_value={1, 2, 3})
+        serialized = d_serialize(d)
+        self.assertEqual(dict(set_value=[1,2,3]), serialized)
+
+    def test_simple_tuple(self):
+        d = dict(set_value=(1, 2))
+        serialized = d_serialize(d)
+        self.assertEqual(dict(set_value=[1,2]), serialized)
+
     def test_list_with_dict(self):
         d = dict(list_value=[dict(a='a'), 2, 3])
         serialized = d_serialize(d)

@@ -26,6 +26,10 @@ def d_serialize(item, attributes=None):
     d = {}
     for a in attributes:
         value = item.get(a, "") if type(item) == dict else getattr(item, a, "")
+
+        if type(value) in [set, tuple]:
+            value = list(value)
+
         if type(value) == dict:
             value = d_serialize(value)
         elif type(value) == list:
