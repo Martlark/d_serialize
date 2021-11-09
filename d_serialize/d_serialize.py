@@ -8,24 +8,35 @@ def d_serialize(item, attributes=None):
     :return:
     """
 
+    def is_valid_attribute(m):
+        try:
+            return not (m.startswith("_") or callable(getattr(item, m)))
+        except Exception as e:
+            return False
+
     if type(item) in [int, float, str, bool]:
         return item
 
     if not attributes:
+
         if isinstance(item, dict):
             attributes = list(item.keys())
         else:
             attributes = [
                 m
                 for m in dir(item)
-                if not (m.startswith("_") or callable(getattr(item, m)))
+                if is_valid_attribute(m)
             ]
     attributes.sort()
     if len(attributes) == 0:
         return str(item)
     d = {}
     for a in attributes:
-        value = item.get(a, "") if type(item) == dict else getattr(item, a, "")
+        value = None
+        try:
+            value = item.get(a, "") if type(item) == dict else getattr(item, a, "")
+        except Exception as e:
+            print(f'warning: exception on attribute {a}: {e}')
 
         if type(value) in [set, tuple]:
             value = list(value)
@@ -34,7 +45,7 @@ def d_serialize(item, attributes=None):
             value = d_serialize(value)
         elif type(value) == list:
             value = [d_serialize(d) for d in value]
-        elif type(value) not in [list, dict, int, float, str, bool]:
+        elif value and type(value) not in [list, dict, int, float, str, bool]:
             value = d_serialize(value)
         d[a] = value
     return d
