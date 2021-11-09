@@ -27,7 +27,7 @@ class ClassWithProperties:
 
 class MyTestCase(unittest.TestCase):
     def test_simple_dict(self):
-        d = dict(number_value=1, float_value=1.1, boolean_value=True, str_value='hello')
+        d = dict(number_value=1, float_value=1.1, boolean_value=True, str_value='hello', none_value=None)
         serialized = d_serialize(d)
         self.assertEqual(d, serialized)
 
@@ -60,6 +60,27 @@ class MyTestCase(unittest.TestCase):
 
         expected = dict(number_value=1, float_value=1.1, boolean_true_value=True, str_value='hello')
         serialized = d_serialize(TestObject())
+        self.assertEqual(expected, serialized)
+
+    def test_error_obj(self):
+        class TestObject:
+            number_value = 1
+            float_value = 1.1
+            boolean_true_value = True
+            str_value = 'hello'
+
+            @property
+            def error_value(self):
+                return 1 / self.number_value
+
+        expected = dict(number_value=1, float_value=1.1, boolean_true_value=True, str_value='hello', error_value=1)
+        serialized = d_serialize(TestObject())
+        self.assertEqual(expected, serialized)
+
+        error_test = TestObject()
+        error_test.number_value = 0
+        expected = dict(number_value=0, float_value=1.1, boolean_true_value=True, str_value='hello')
+        serialized = d_serialize(error_test)
         self.assertEqual(expected, serialized)
 
     def test_obj_with_methods(self):
