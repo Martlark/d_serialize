@@ -48,6 +48,9 @@ values are also converted.
 
 Methods and private properties (starting with `_`) are not enumerated.
 
+Any property or attribute that raises an exception will be excluded or
+have a `None` value.
+
 Example:
 --------
 

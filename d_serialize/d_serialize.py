@@ -8,15 +8,16 @@ def d_serialize(item, attributes=None):
     :return:
     """
 
+    def is_valid_attribute(m):
+        try:
+            return not (m.startswith("_") or callable(getattr(item, m)))
+        except Exception as e:
+            return False
+
     if type(item) in [int, float, str, bool]:
         return item
 
     if not attributes:
-        def is_valid_attribute(m):
-            try:
-                return not (m.startswith("_") or callable(getattr(item, m)))
-            except Exception as e:
-                return False
 
         if isinstance(item, dict):
             attributes = list(item.keys())
