@@ -72,5 +72,6 @@ Converting a Class instance.
 Release History
 ===============
 
-1.0.0 First version of this wondrous package.
-1.0.1 Check for None when serializing and return None rather than 'None'.  Exceptions on getattr return None for value.
+* 1.0.0 First version of this wondrous package.
+* 1.0.1 Check for None when serializing and return None rather than 'None'.  Exceptions on getattr return None for value.
+* 1.0.2 Crummy circular reference test.

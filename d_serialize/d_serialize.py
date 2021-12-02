@@ -1,3 +1,9 @@
+from random import choices
+from string import ascii_letters
+
+_reentrant_attribute_check_name = f"_{''.join(choices(ascii_letters, k=50))}"
+
+
 def d_serialize(item, attributes=None):
     """
     convert the given attributes for the item into a dict
@@ -16,6 +22,9 @@ def d_serialize(item, attributes=None):
 
     if type(item) in [int, float, str, bool]:
         return item
+
+    if hasattr(item, _reentrant_attribute_check_name):
+        return None
 
     if not attributes:
 
@@ -46,6 +55,8 @@ def d_serialize(item, attributes=None):
         elif type(value) == list:
             value = [d_serialize(d) for d in value]
         elif value and type(value) not in [list, dict, int, float, str, bool]:
-            value = d_serialize(value)
+            setattr(item, _reentrant_attribute_check_name, True)
+            d_value = d_serialize(value)
+            value=d_value
         d[a] = value
     return d

@@ -39,12 +39,12 @@ class MyTestCase(unittest.TestCase):
     def test_simple_set(self):
         d = dict(set_value={1, 2, 3})
         serialized = d_serialize(d)
-        self.assertEqual(dict(set_value=[1,2,3]), serialized)
+        self.assertEqual(dict(set_value=[1, 2, 3]), serialized)
 
     def test_simple_tuple(self):
         d = dict(set_value=(1, 2))
         serialized = d_serialize(d)
-        self.assertEqual(dict(set_value=[1,2]), serialized)
+        self.assertEqual(dict(set_value=[1, 2]), serialized)
 
     def test_list_with_dict(self):
         d = dict(list_value=[dict(a='a'), 2, 3])
@@ -60,6 +60,26 @@ class MyTestCase(unittest.TestCase):
 
         expected = dict(number_value=1, float_value=1.1, boolean_true_value=True, str_value='hello')
         serialized = d_serialize(TestObject())
+        self.assertEqual(expected, serialized)
+
+    def test_circular_ref_obj(self):
+        class TestObject:
+            number_value = 1
+            float_value = 1.1
+            boolean_true_value = True
+            str_value = 'hello'
+            another_obj = None
+
+        expected = dict(number_value=1, float_value=1.1, boolean_true_value=True, str_value='hello', another_obj=None)
+        obj = TestObject()
+        serialized = d_serialize(obj)
+        self.assertEqual(expected, serialized)
+
+        expected = dict(number_value=1, float_value=1.1, boolean_true_value=True, str_value='hello',
+                        another_obj=None)
+        recursive_obj = TestObject()
+        recursive_obj.another_obj = recursive_obj
+        serialized = d_serialize(recursive_obj)
         self.assertEqual(expected, serialized)
 
     def test_error_obj(self):
