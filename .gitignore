@@ -1,2 +1,5 @@
 .idea
 venv
+dist
+build
+d_serialize.egg-info
