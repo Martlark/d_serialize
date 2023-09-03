@@ -69,7 +69,11 @@ def d_serialize(item, attributes=None):
         elif type(value) == list:
             value = [d_serialize(d) for d in value]
         elif value and type(value) not in [list, dict, int, float, str, bool]:
-            setattr(item, _reentrant_attribute_check_name, True)
+            try:
+                # re-entrance check
+                setattr(item, _reentrant_attribute_check_name, True)
+            except:
+                pass
             d_value = d_serialize(value)
             value = d_value
 
