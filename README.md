@@ -57,16 +57,18 @@ Example:
 Converting a Class instance.
 
 ```python
-        class TestObject:
-            number_value = 1
-            float_value = 1.1
+from d_serialize import d_serialize
 
-            def dont_call_me(self):
-                """return self.number_value"""
+class TestObject:
+    number_value = 1
+    float_value = 1.1
 
-        print(d_serialize(TestObject()))
-        
-        # dict(number_value=1, float_value=1.1)
+    def dont_call_me(self):
+        """return self.number_value"""
+
+print(d_serialize(TestObject()))
+
+# dict(number_value=1, float_value=1.1)
 ```
 
 Release History
@@ -75,3 +77,4 @@ Release History
 * 1.0.0 First version of this wondrous package.
 * 1.0.1 Check for None when serializing and return None rather than 'None'.  Exceptions on getattr return None for value.
 * 1.0.2 Crummy circular reference test.  Convert top level list, set, tuple.
+* 1.0.3 Fix deploy workflow
