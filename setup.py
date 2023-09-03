@@ -15,49 +15,42 @@
 from codecs import open
 from setuptools import setup
 
-VERSION = '1.0.1'
-LONG_DESCRIPTION = open('README.md', 'r', encoding='utf-8').read()
+VERSION = open("VERSION", "r", encoding="utf-8").read().strip()
+LONG_DESCRIPTION = open("README.md", "r", encoding="utf-8").read()
 
 setup(
-    name='d-serialize',
-
+    name="d-serialize",
     version=VERSION,
-
-    description='Universal Python serializer',
+    description="Universal Python serializer",
     long_description=LONG_DESCRIPTION,
-    long_description_content_type='text/markdown',
-
-    url='https://github.com/Martlark/d_serialize',
-    download_url='https://github.com/Martlark/d_serialize/archive/{version}.tar.gz'.format(version=VERSION),
-
-    author='Andrew Rowe',
-    author_email='rowe.andrew.d@gmail.com',
-
-    license='Apache Software License',
-
+    long_description_content_type="text/markdown",
+    url="https://github.com/Martlark/d_serialize",
+    download_url="https://github.com/Martlark/d_serialize/archive/{version}.tar.gz".format(
+        version=VERSION
+    ),
+    author="Andrew Rowe",
+    author_email="rowe.andrew.d@gmail.com",
+    license="Apache Software License",
     classifiers=[
-        'Development Status :: 5 - Production/Stable',
-
-        'Intended Audience :: Developers',
-        'Topic :: Software Development :: Libraries :: Python Modules',
-
-        'License :: OSI Approved :: Apache Software License',
-
-        'Programming Language :: Python',
-        'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.5',
-        'Programming Language :: Python :: 3.6',
-        'Programming Language :: Python :: 3.7',
-        'Programming Language :: Python :: 3.8',
-        'Programming Language :: Python :: 3.9',
-
-        'Operating System :: POSIX',
-        'Operating System :: MacOS',
-        'Operating System :: Unix',
-        'Operating System :: Microsoft :: Windows',
+        "Development Status :: 5 - Production/Stable",
+        "Intended Audience :: Developers",
+        "Topic :: Software Development :: Libraries :: Python Modules",
+        "License :: OSI Approved :: Apache Software License",
+        "Programming Language :: Python",
+        "Programming Language :: Python :: 3",
+        "Programming Language :: Python :: 3.5",
+        "Programming Language :: Python :: 3.6",
+        "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3.11",
+        "Operating System :: POSIX",
+        "Operating System :: MacOS",
+        "Operating System :: Unix",
+        "Operating System :: Microsoft :: Windows",
     ],
-    keywords='serialize json convert dict',
-
-    packages=['d_serialize'],
+    keywords="serialize json convert dict",
+    packages=["d_serialize"],
     include_package_data=True,
 )
