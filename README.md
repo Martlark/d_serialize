@@ -35,12 +35,12 @@ def a_route():
     return jsonify(json_values)
 ```
 
-d_serialize will enumerate all public properties of your object (or `dict`) and convert them
+d_serialize will enumerate all public properties of your object, set, list or `dict` and convert them
 to a JSON allowable type.  IE:
 
     list, dictionary, string, float, integer or boolean.
 
-Any property that is not one of these types will be converted to a `string`. `set`
+Any property that is not one of these types will be converted to a `string`. Enumerables: `set`
 and `tuple` will be converted to `list`.
 
 Dictionary and list properties will be followed to ensure all child objects and
@@ -74,4 +74,4 @@ Release History
 
 * 1.0.0 First version of this wondrous package.
 * 1.0.1 Check for None when serializing and return None rather than 'None'.  Exceptions on getattr return None for value.
-* 1.0.2 Crummy circular reference test.
+* 1.0.2 Crummy circular reference test.  Convert top level list, set, tuple.
