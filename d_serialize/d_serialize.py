@@ -2,6 +2,8 @@ from random import choices
 from string import ascii_letters
 
 _reentrant_attribute_check_name = f"_{''.join(choices(ascii_letters, k=50))}"
+_seen_already = {}
+_MAX_RECURSION = 5
 
 
 def is_valid_attribute(item, m):
@@ -33,7 +35,10 @@ def d_serialize(item, attributes=None):
     if type(item) in [int, float, str, bool]:
         return item
 
-    if hasattr(item, _reentrant_attribute_check_name):
+    if (
+        hasattr(item, _reentrant_attribute_check_name)
+        or _seen_already.get(str(item), 0) > _MAX_RECURSION
+    ):
         return None
 
     # lists, tuples and sets
@@ -71,6 +76,9 @@ def d_serialize(item, attributes=None):
         elif value and type(value) not in [list, dict, int, float, str, bool]:
             try:
                 # re-entrance check
+                _seen_already.setdefault(
+                    str(value), 1 + _seen_already.get(str(value), 0)
+                )
                 setattr(item, _reentrant_attribute_check_name, True)
             except:
                 pass
