@@ -1,11 +1,3 @@
-from random import choices
-from string import ascii_letters
-
-_reentrant_attribute_check_name = f"_{''.join(choices(ascii_letters, k=50))}"
-_seen_already = {}
-_MAX_RECURSION = 5
-
-
 def is_valid_attribute(item, m):
     """
     return true if attribute is something that
@@ -13,7 +5,7 @@ def is_valid_attribute(item, m):
 
     :param item:
     :param m:
-    :return:
+    :return: bool
     """
     try:
         return not (m.startswith("_") or callable(getattr(item, m)))
@@ -30,61 +22,70 @@ def d_serialize(item, attributes=None):
     :param attributes: list of attributes, defaults to all in item
     :return:
     """
+    _seen_already = {}
 
-    # base types supported by JSON
-    if type(item) in [int, float, str, bool]:
-        return item
+    def _d_serialize(_item, _attributes=None):
+        """
+        recursive proxy
 
-    if (
-        hasattr(item, _reentrant_attribute_check_name)
-        or _seen_already.get(str(item), 0) > _MAX_RECURSION
-    ):
-        return None
+        :param _item: an object, list, set, tuple or dictionary
+        :param _attributes: list of attributes, defaults to all in item
+        :return:
+        """
 
-    # lists, tuples and sets
-    if type(item) in [set, list, tuple]:
-        return [d_serialize(d) for d in item]
+        # base types supported by JSON
+        if type(_item) in [int, float, str, bool]:
+            return _item
 
-    if not attributes:
+        if _seen_already.get(str(_item)):
+            return str(_item)
 
-        if isinstance(item, dict):
-            attributes = list(item.keys())
-        else:
-            attributes = [m for m in dir(item) if is_valid_attribute(item, m)]
+        # lists, tuples and sets
+        if type(_item) in [set, list, tuple]:
+            return [_d_serialize(d) for d in _item]
 
-    attributes.sort()
+        if not _attributes:
 
-    if len(attributes) == 0:
-        return str(item)
+            if isinstance(_item, dict):
+                _attributes = list(_item.keys())
+            else:
+                _attributes = [m for m in dir(_item) if is_valid_attribute(_item, m)]
 
-    d = {}
-    for a in attributes:
-        value = None
+        _attributes.sort()
 
-        try:
-            value = item.get(a, "") if type(item) == dict else getattr(item, a, "")
-        except Exception as e:
-            print(f"d_serialize: warning: exception on attribute {a}: {e}")
+        if len(_attributes) == 0:
+            return str(_item)
 
-        if type(value) in [set, tuple]:
-            value = list(value)
+        d = {}
+        for a in _attributes:
+            value = None
 
-        if type(value) == dict:
-            value = d_serialize(value)
-        elif type(value) == list:
-            value = [d_serialize(d) for d in value]
-        elif value and type(value) not in [list, dict, int, float, str, bool]:
             try:
-                # re-entrance check
-                _seen_already.setdefault(
-                    str(value), 1 + _seen_already.get(str(value), 0)
+                value = (
+                    _item.get(a, "") if type(_item) == dict else getattr(_item, a, "")
                 )
-                setattr(item, _reentrant_attribute_check_name, True)
-            except:
-                pass
-            d_value = d_serialize(value)
-            value = d_value
+            except Exception as e:
+                print(f"_d_serialize: warning: exception on attribute {a}: {e}")
 
-        d[a] = value
+            if type(value) in [set, tuple]:
+                value = list(value)
 
-    return d
+            if type(value) == dict:
+                value = _d_serialize(value)
+            elif type(value) == list:
+                value = [_d_serialize(d) for d in value]
+            elif value and type(value) not in [list, dict, int, float, str, bool]:
+                try:
+                    # re-entrance check
+                    key = str(value)
+                    _seen_already[key] = 1
+                except:
+                    pass
+                d_value = _d_serialize(value)
+                value = d_value
+
+            d[a] = value
+
+        return d
+
+    return _d_serialize(item, attributes)

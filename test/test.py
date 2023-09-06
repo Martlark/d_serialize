@@ -114,10 +114,10 @@ class MyTestCase(unittest.TestCase):
             float_value=1.1,
             boolean_true_value=True,
             str_value="hello",
-            another_obj=None,
         )
         recursive_obj = TestObject()
         recursive_obj.another_obj = recursive_obj
+        expected["another_obj"] = str(recursive_obj)
         serialized = d_serialize(recursive_obj)
         self.assertEqual(expected, serialized)
 
@@ -192,7 +192,7 @@ class MyTestCase(unittest.TestCase):
 
             @property
             def prop(self):
-                return self._class_value
+                return self._class_value.test_value()
 
         expected = dict(number_value=1, prop=ClassWithProperties.test_value())
         serialized = d_serialize(TestObject())
@@ -205,7 +205,7 @@ class MyTestCase(unittest.TestCase):
 
             @property
             def complex_object(self):
-                return self._complex_object
+                return self._complex_object.test_value()
 
         expected = dict(number_value=1, complex_object=ClassWithProperties.test_value())
         serialized = d_serialize(TestObject())

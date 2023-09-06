@@ -43,13 +43,16 @@ to a JSON allowable type.  IE:
 Any property that is not one of these types will be converted to a `string`. Enumerables: `set`
 and `tuple` will be converted to `list`.
 
-Dictionary and list properties will be followed to ensure all child objects and
+Dictionary, set, tuple and list properties will be followed to ensure all child objects and
 values are also converted.
 
 Methods and private properties (starting with `_`) are not enumerated.
 
 Any property or attribute that raises an exception will be excluded or
 have a `None` value.
+
+Complex objects that refer to themselves will have their str value as the 
+recursive value instead of the entire complex value.
 
 Example:
 --------
@@ -79,3 +82,4 @@ Release History
 * 1.0.2 Crummy circular reference test.  Convert top level list, set, tuple.
 * 1.0.3 Fix deploy workflow
 * 1.0.4 Allow for readonly objects
+* 1.0.6 Improve recursion check and value
